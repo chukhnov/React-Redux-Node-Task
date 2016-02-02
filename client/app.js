@@ -1,143 +1,64 @@
 import React from 'react'
 import { render } from 'react-dom'
 import { browserHistory, Router, Route, Link } from 'react-router'
-import auth from './auth'
 
-const App = React.createClass({
-    getInitialState() {
-        return {
-            loggedIn: auth.loggedIn()
-        }
-    },
-
-    updateAuth(loggedIn) {
-        this.setState({
-            loggedIn: loggedIn
-        })
-    },
-
-    componentWillMount() {
-        auth.onChange = this.updateAuth
-        auth.login()
-    },
-
-    render() {
-        return (
-            <div>
-                        {this.state.loggedIn ? (
-                            <Link to="/logout">Log out</Link>
-                        ) : (
-                            <Link to="/login">Sign in</Link>
-                        )}
-                <br />
-                        {!this.state.loggedIn ? (
-                            <Link to="/register">Register</Link>
-                        ) : null}
-
-                {this.props.children || <p>You are {!this.state.loggedIn && 'not'} logged in.</p>}
-            </div>
-        )
-    }
-})
-
-const Dashboard = React.createClass({
-    render() {
-        const token = auth.getToken()
-
-        return (
-            <div>
-                <h1>Dashboard</h1>
-                <p>You made it!</p>
-                <p>{token}</p>
-            </div>
-        )
-    }
-})
-
-const Login = React.createClass({
-
-    contextTypes: {
-        router: React.PropTypes.object.isRequired
-    },
-
-    getInitialState() {
-        return {
-            error: false
-        }
-    },
-
-    handleSubmit(event) {
-        event.preventDefault()
-
-        const user = this.refs.user.value
-        const pass = this.refs.pass.value
-
-        auth.login(user, pass, (loggedIn) => {
-            if (!loggedIn)
-                return this.setState({ error: true })
-
-            const { location } = this.props
-
-            if (location.state && location.state.nextPathname) {
-                this.context.router.replace(location.state.nextPathname)
-            } else {
-                this.context.router.replace('/')
-            }
-        })
-    },
-
-    render() {
-        return (
-            <form onSubmit={this.handleSubmit}>
-                <label><input ref="user" placeholder="username" defaultValue="user" /></label>
-                <label><input ref="pass" placeholder="password" /></label><br />
-                <button type="submit">login</button>
-                {this.state.error && (
-                    <p>Bad login information</p>
-                )}
-            </form>
-        )
-    }
-})
 
 const Register = React.createClass({
-    render() {
-        return (
-            <form onSubmit={this.handleSubmit}>
-                <label><input ref="user" placeholder="username" defaultValue="user" /></label>
-                <label><input ref="pass" placeholder="password" /></label><br />
-                <button type="submit">login</button>
-            </form>
-        )
-    }
-})
-
-const Logout = React.createClass({
-    componentDidMount() {
-        auth.logout()
+    getInitialState: function () {
+        return {
+            username: " ",
+            password: " "
+        };
+    },
+    nameChange: function (event) {
+        this.setState({username: event.target.value});
+    },
+    passChange: function (event) {
+        this.setState({password: event.target.value});
     },
 
     render() {
-        return <p>You are now logged out</p>
-    }
-})
+        return (
+            <form>
+                <div>
+                    <label>Username:</label>
+                    <input type="text" name="username" onChange={this.nameChange}/><br/>
+                </div>
+                <div>
+                    <label>Password:</label>
+                    <input type="password" name="password" onChange={this.passChange}/>
+                </div>
+                <div>
+                    <input type="submit" onClick={this._onChange} value="Submit"/>
+                </div>
+            </form>
+        )
+    },
+    _onChange: function (event) {
+        event.preventDefault();
+        var target = this.state.username;
+        var target1 = this.state.password;
+        console.log(target, target1);
+        var xhr = new XMLHttpRequest();
+        var url = "http://127.0.0.1";
+        xhr.open("POST", url, true);
+        xhr.send(target);
+        xhr.onload = function () {
+            var post = xhr.responseText;
+                console.log(post)
+        };
+        xhr.onerror = function () {
+            console.log("Error")
+        }
 
-function requireAuth(nextState, replace) {
-    if (!auth.loggedIn()) {
-        replace({
-            pathname: '/login',
-            state: { nextPathname: nextState.location.pathname }
-        })
     }
-}
+});
+
 
 render((
     <Router history={browserHistory}>
-        <Route path="/" component={App}>
-            <Route path="login" component={Login} />
-            <Route path="logout" component={Logout} />
+        <Route path="/" component={Register}>
             <Route path="register" component={Register} />
-            <Route path="dashboard" component={Dashboard} onEnter={requireAuth} />
         </Route>
     </Router>
 ), document.getElementById("application"));

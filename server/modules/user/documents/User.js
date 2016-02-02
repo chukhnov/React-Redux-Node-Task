@@ -1,8 +1,12 @@
-import mongoose from 'mongoose';
-const Schema = mongoose.Schema;
-const UserSchema = new Schema({
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema,
+    passportLocalMongoose = require('passport-local-mongoose');
+
+var Account = new Schema({
     username: String,
-    passwordHash: String,
-    passwordSalt: String
-})
-export default mongoose.model('User', UserSchema);
+    password: String
+});
+
+Account.plugin(passportLocalMongoose);
+
+module.exports = mongoose.model('Account', Account);
