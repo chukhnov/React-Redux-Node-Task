@@ -11,10 +11,12 @@
   "dependencies": {
     "babel": "^5.8.35",
     "babel-loader": "^5.4.0",
+    "body-parser": "^1.14.2",
     "connect-flash": "^0.1.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
     "mongoose": "^4.3.7",
+    "multer": "^1.1.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^4.0.0",
