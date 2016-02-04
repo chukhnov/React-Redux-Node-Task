@@ -1,6 +1,6 @@
 var path = require('path');
 var config = {
-    entry: path.resolve(__dirname, 'client/app.js'),
+    entry: path.resolve(__dirname, 'client/index.js'),
     output: {
         path: path.resolve(__dirname, 'public/build'),
         filename: 'bundle.js'
