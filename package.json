@@ -15,6 +15,7 @@
     "connect-flash": "^0.1.1",
     "express": "^4.13.4",
     "express-session": "^1.13.0",
+    "immutable": "^3.7.6",
     "mongoose": "^4.3.7",
     "multer": "^1.1.0",
     "passport": "^0.3.2",
@@ -27,6 +28,7 @@
     "react-router": "^1.0.3",
     "redux": "^3.2.1",
     "redux-simple-router": "^2.0.4",
+    "redux-thunk": "^1.0.3",
     "socket.io": "^1.4.5"
   }
 }
