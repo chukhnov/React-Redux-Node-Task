@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react'
 import { addUser } from './../actions/actions'
-import AddUser from './../components/RegisterUser'
+import RegisterUser from './../components/RegisterUser'
 import { store } from './../store/store'
 
-class App extends Component {
+
+class Reg extends Component {
 
     render() {
         return (
             <div>
-                <AddUser
+                <RegisterUser
                     onRegisterClick={data =>
                     store.dispatch(addUser(data))}/>
             </div>
@@ -16,4 +17,4 @@ class App extends Component {
     }
 }
 
-export default App
+export default Reg

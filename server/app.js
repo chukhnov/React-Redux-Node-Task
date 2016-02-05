@@ -25,27 +25,24 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
-app.post('/api/1/login', passport.authenticate('local'), function (req, res) {
+app.post('/api/1/login', passport.authenticate('local'),
+    function (req, res) {
     console.log('Login successful!');
+        res.json({message:"Success", username: req.user.username});
 });
 
-
 app.post('/api/1/register', (req, res, next) => {
-    console.log(req.body.username);
-    res.send('fuck')
-    if (!req.body.username && !req.body.password) {
-        res.send('ERROR');
-    }
-    //else {
-    //    User.register(new User({username: req.body.username}), req.body.password, (err) => {
-    //        if (err) {
-    //            console.log('error while user register!', err);
-    //            return
-    //        }
-    //        console.log('user registered!');
-    //        res.send('OK');
-    //    });
-    //}
+
+    User.register(new User({username: req.body.username}), req.body.password, (err) => {
+        if (err) {
+            console.log('error while user register!', err);
+            res.json({name:err.name, message: err.message});
+            return
+        }
+        console.log('user registered!');
+        res.json({name:'Register successful!', username: req.body.username});
+    });
+
 
 });
 

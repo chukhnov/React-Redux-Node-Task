@@ -37,6 +37,8 @@ export default class RegisterUser extends Component {
         this.props.onRegisterClick(obj);
         username.value = '';
         password.value = '';
+        console.log(store.getState());
+
         fetch('/api/1/register', {
             method: 'post',
             headers: {
@@ -44,10 +46,13 @@ export default class RegisterUser extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(obj)
-        }).then(function(response) {
-                console.log(response.statusText)
-
-        });
+        }).then(parseJSON)
+            .then(function(data) {
+                console.log(data)
+            });
+        function parseJSON(response) {
+            return response.json()
+        }
 
     }
 }

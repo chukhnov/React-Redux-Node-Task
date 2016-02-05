@@ -44,7 +44,15 @@ export default class LoginUser extends Component {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(obj)
+        }).then(parseJSON)
+            .then(function(data) {
+                console.log('request succeeded with JSON response', data)
+            }).catch(function(error) {
+            console.log('request failed', error)
         });
+        function parseJSON(response) {
+            return response.json()
+        }
         console.log(store.getState())
 
     }
