@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { store } from './../store/store'
+import { Link } from 'react-router'
 
 export default class LoginUser extends Component {
     render() {
@@ -20,6 +20,7 @@ export default class LoginUser extends Component {
                         Login
                     </button>
                 </div>
+                <Link to="register">Register</Link>
             </form>
         )
     }
@@ -37,23 +38,6 @@ export default class LoginUser extends Component {
         this.props.onRegisterClick(obj);
         username.value = '';
         password.value = '';
-        fetch('/api/1/login', {
-            method: 'post',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(obj)
-        }).then(parseJSON)
-            .then(function(data) {
-                console.log('request succeeded with JSON response', data)
-            }).catch(function(error) {
-            console.log('request failed', error)
-        });
-        function parseJSON(response) {
-            return response.json()
-        }
-        console.log(store.getState())
 
     }
 }

@@ -1,5 +1,6 @@
 import React, {Component, PropTypes} from 'react'
-import {store} from './../store/store'
+import { Link } from 'react-router'
+
 
 export default class RegisterUser extends Component {
     render() {
@@ -20,13 +21,14 @@ export default class RegisterUser extends Component {
                         Register
                     </button>
                 </div>
+                <Link to="login">Login</Link>
             </form>
+
         )
     }
 
     handleClick(e) {
         e.preventDefault();
-        //const self = this;
         const username = this.refs.username;
         const password = this.refs.password;
         const dataUsername = username.value.trim();
@@ -38,24 +40,6 @@ export default class RegisterUser extends Component {
         this.props.onRegisterClick(obj);
         username.value = '';
         password.value = '';
-
-        //fetch('/api/1/register', {
-        //    method: 'post',
-        //    headers: {
-        //        'Accept': 'application/json',
-        //        'Content-Type': 'application/json'
-        //    },
-        //    body: JSON.stringify(obj)
-        //}).then(parseJSON)
-        //    .then(function (data) {
-        //        if (data.username) {
-        //            self.props.onRegisterClick(obj);
-                    console.log(store.getState());
-        //        }
-        //    });
-        //function parseJSON(response) {
-        //    return response.json()
-        //}
 
     }
 }

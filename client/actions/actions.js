@@ -1,56 +1,72 @@
-//import { MyAPI } from './../network/MyAPI.js'
-import  { REGISTER_ATTEMPT, REGISTER_FAILED, REGISTER_SUCCESSFULLY } from './../constants/RegisterActionTypes'
+import  {REGISTER_FAILED, REGISTER_SUCCESSFULLY} from './../constants/RegisterActionTypes'
+import {browserHistory} from 'react-router'
 
-//export function addUser(user) {
-//    return dispatch => {
-//        MyAPI.sendData(user)
-//            .then(
-//            data => dispatch({
-//                type: REGISTER_ATTEMPT,
-//                data
-//            })
-//        )
-//    }
-//}
 
 export function loginError(error) {
-    return { error, type: REGISTER_FAILED };
+    return {error, type: REGISTER_FAILED};
 }
 
 export function loginSuccess(response) {
     return dispatch => {
-        dispatch({ response, type: REGISTER_SUCCESSFULLY });
+        dispatch({response, type: REGISTER_SUCCESSFULLY});
+        console.log('REGISTER SUCCESSFULLY');
+        browserHistory.push('/dashboard');
     };
 }
 
-export function addUser(user) {
-    return { user, type: REGISTER_ATTEMPT };
-}
-
-export function login(userData) {
-    function parseJSON(response) {
-        return response.json()
+export function register(userData) {
+    function parseJSON(res) {
+        return res.json()
     }
+
     return dispatch =>
         fetch('/api/1/register', {
             method: 'post',
             headers: {
                 'Accept': 'application/json',
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userData),
+            body: JSON.stringify(userData)
         })
             .then(parseJSON)
             .then(function (data) {
                 if (data.username) {
                     console.log("Ok");
-                    dispatch(loginSuccess(response));
+                    dispatch(loginSuccess(data));
                 } else {
-                    //const error = new Error(response.statusText);
-                    //error.response = response;
                     dispatch(loginError(error));
                     throw error;
                 }
             })
-            .catch(error => { console.log('request failed', error); });
+            .catch(error => {
+                console.log('request failed', error);
+            });
+}
+export function login(userData) {
+    function parseJSON(res) {
+        return res.json()
+    }
+
+    return dispatch =>
+        fetch('/api/1/login', {
+            method: 'post',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        })
+            .then(parseJSON)
+            .then(function (data) {
+                if (data.username) {
+                    console.log("Ok");
+                    dispatch(loginSuccess(data));
+                } else {
+                    dispatch(loginError(error));
+                    throw error;
+                }
+            })
+            .catch(error => {
+                console.log('request failed', error);
+            });
 }

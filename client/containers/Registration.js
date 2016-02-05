@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { login } from './../actions/actions'
+import { register } from './../actions/actions'
 import RegisterUser from './../components/RegisterUser'
 import { store } from './../store/store'
 
@@ -11,7 +11,7 @@ class Reg extends Component {
             <div>
                 <RegisterUser
                     onRegisterClick={data =>
-                    store.dispatch(login(data))}/>
+                    store.dispatch(register(data))}/>
             </div>
         )
     }
