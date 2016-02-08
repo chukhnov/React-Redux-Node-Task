@@ -46,6 +46,17 @@ app.post('/api/1/register', (req, res, next) => {
 
 });
 
+
+
+
+app.get('/api/1/logout', function(req, res){
+    req.logout();
+    res.json({message:"Success", ok: 'ok'});
+    console.log('Logout Success!');
+
+
+});
+
 app.use(ApplicationRouter);
 app.listen(conig.port);
 console.log('Server running at port ' + conig.port);

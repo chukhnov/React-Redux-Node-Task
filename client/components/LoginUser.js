@@ -35,7 +35,7 @@ export default class LoginUser extends Component {
             username: dataUsername,
             password: dataPassword
         };
-        this.props.onRegisterClick(obj);
+        this.props.onLoginClick(obj);
         username.value = '';
         password.value = '';
 
@@ -43,5 +43,5 @@ export default class LoginUser extends Component {
 }
 
 LoginUser.propTypes = {
-    onRegisterClick: PropTypes.func.isRequired
+    onLoginClick: PropTypes.func.isRequired
 };

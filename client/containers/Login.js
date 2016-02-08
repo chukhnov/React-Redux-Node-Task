@@ -4,17 +4,17 @@ import LoginUser from './../components/LoginUser'
 import { store } from './../store/store'
 
 
-class App extends Component {
+class Log extends Component {
 
     render() {
         return (
             <div>
                 <LoginUser
-                    onRegisterClick={data =>
+                    onLoginClick={data =>
                     store.dispatch(login(data))}/>
             </div>
         )
     }
 }
 
-export default App
+export default Log

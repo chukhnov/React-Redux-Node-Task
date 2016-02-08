@@ -1,16 +1,35 @@
-import  {REGISTER_FAILED, REGISTER_SUCCESSFULLY} from './../constants/RegisterActionTypes'
+import  {REGISTER_FAILED, REGISTER_SUCCESSFULLY,LOGIN_FAILED, LOGIN_SUCCESSFULLY, LOGOUT} from './../constants/RegisterActionTypes'
 import {browserHistory} from 'react-router'
 
 
 export function loginError(error) {
-    return {error, type: REGISTER_FAILED};
+    return {error, type: LOGIN_FAILED};
 }
 
 export function loginSuccess(response) {
     return dispatch => {
+        dispatch({response, type: LOGIN_SUCCESSFULLY});
+        console.log('LOGIN SUCCESSFULLY');
+        browserHistory.push('/dashboard');
+    };
+}
+export function registerError(error) {
+    return {error, type: REGISTER_FAILED};
+}
+
+export function registerSuccess(response) {
+    return dispatch => {
         dispatch({response, type: REGISTER_SUCCESSFULLY});
         console.log('REGISTER SUCCESSFULLY');
         browserHistory.push('/dashboard');
+    };
+}
+
+export function logout() {
+    return dispatch => {
+        dispatch({type: LOGOUT});
+        console.log('SUCCESSFUL LOGOUT');
+        browserHistory.push('/');
     };
 }
 
@@ -31,10 +50,9 @@ export function register(userData) {
             .then(parseJSON)
             .then(function (data) {
                 if (data.username) {
-                    console.log("Ok");
-                    dispatch(loginSuccess(data));
+                    dispatch(registerSuccess(data.username));
                 } else {
-                    dispatch(loginError(error));
+                    dispatch(registerError(error));
                     throw error;
                 }
             })
@@ -59,8 +77,7 @@ export function login(userData) {
             .then(parseJSON)
             .then(function (data) {
                 if (data.username) {
-                    console.log("Ok");
-                    dispatch(loginSuccess(data));
+                    dispatch(loginSuccess(data.username));
                 } else {
                     dispatch(loginError(error));
                     throw error;
@@ -70,3 +87,22 @@ export function login(userData) {
                 console.log('request failed', error);
             });
 }
+
+export function exit() {
+
+    function parseJSON(response) {
+        return response.json()
+    }
+    return dispatch =>
+    fetch('/api/1/logout')
+        .then(parseJSON)
+        .then(function(data) {
+            if (data.ok) {
+                dispatch(logout());
+            }
+        }).catch(function(error) {
+        console.log('request failed', error)
+    })
+}
+
+
