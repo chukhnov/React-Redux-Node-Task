@@ -1,13 +1,15 @@
-import  {REGISTER_FAILED, REGISTER_SUCCESSFULLY,LOGIN_FAILED, LOGIN_SUCCESSFULLY, LOGOUT} from './../constants/RegisterActionTypes'
+import  {REGISTER_FAILED, REGISTER_SUCCESSFULLY,
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY,USER_DATA, LOGOUT} from './../constants/RegisterActionTypes'
 
 const initialState = {
     userData: {
         username: undefined,
         admin: false,
-        days: []
+        id: null
     },
     isLoggedIn: false,
-    error: null
+    error: null,
+    days: []
 };
 
 export default function user(state = initialState, action) {
@@ -37,6 +39,10 @@ export default function user(state = initialState, action) {
                 },
                 error: null,
                 isLoggedIn: true
+            });
+        case USER_DATA:
+            return Object.assign(state, {
+                    days: action.response
             });
         case LOGOUT:
             return Object.assign(state, {

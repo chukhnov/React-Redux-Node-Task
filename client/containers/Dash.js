@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { exit } from './../actions/actions'
+import { exit, dataLoad, dataUpdate } from './../actions/actions'
 import Dashboard from './../components/Dashboard'
 import { store } from './../store/store'
 
@@ -10,7 +10,11 @@ class Dash extends Component {
             <div>
                 <Dashboard
                     onLogoutClick={data =>
-                    store.dispatch(exit())}/>
+                    store.dispatch(exit())}
+                    dataLoad={data =>
+                    store.dispatch(dataLoad())}
+                    dataUpdate={data =>
+                    store.dispatch(dataUpdate(data))}/>
             </div>
         )
     }

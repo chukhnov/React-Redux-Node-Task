@@ -1,18 +1,21 @@
 import React, { Component, PropTypes } from 'react'
 import { Link } from 'react-router'
+import {browserHistory} from 'react-router'
+
 
 export default class LoginUser extends Component {
+
     render() {
         return (
             <form >
                 <div>
                     <label>Username:</label>
-                    <input type='text' ref='username'/>
+                    <input type='text' ref='username' defaultValue="333"/>
                     <br/>
                 </div>
                 <div>
                     <label>Password:</label>
-                    <input type='text' ref='password'/>
+                    <input type='text' ref='password' defaultValue="333"/>
                     <br/>
                 </div>
                 <div>
