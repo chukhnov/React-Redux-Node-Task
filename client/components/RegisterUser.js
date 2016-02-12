@@ -4,8 +4,11 @@ import { Link } from 'react-router'
 
 export default class RegisterUser extends Component {
     render() {
+        const center = {
+        textAlign: 'center'
+    };
         return (
-            <form >
+            <form style={center}>
                 <div>
                     <label>Username:</label>
                     <input type='text' ref='username'/>

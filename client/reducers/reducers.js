@@ -1,5 +1,7 @@
-import  {REGISTER_FAILED, REGISTER_SUCCESSFULLY,
-    LOGIN_FAILED, LOGIN_SUCCESSFULLY,USER_DATA, LOGOUT} from './../constants/RegisterActionTypes'
+import  {
+    REGISTER_FAILED, REGISTER_SUCCESSFULLY,
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER
+} from './../constants/RegisterActionTypes'
 
 const initialState = {
     userData: {
@@ -9,7 +11,8 @@ const initialState = {
     },
     isLoggedIn: false,
     error: null,
-    days: []
+    days: [],
+    spiner: false
 };
 
 export default function user(state = initialState, action) {
@@ -18,6 +21,10 @@ export default function user(state = initialState, action) {
             return Object.assign(state, {
                 error: action.error,
                 isLoggedIn: false
+            });
+        case SPINER:
+            return Object.assign(state, {
+                spiner: action.response
             });
         case REGISTER_SUCCESSFULLY:
             return Object.assign(state, {
@@ -42,7 +49,8 @@ export default function user(state = initialState, action) {
             });
         case USER_DATA:
             return Object.assign(state, {
-                    days: action.response
+                days: action.response,
+                spiner: false
             });
         case LOGOUT:
             return Object.assign(state, {

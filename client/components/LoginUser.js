@@ -6,8 +6,11 @@ import {browserHistory} from 'react-router'
 export default class LoginUser extends Component {
 
     render() {
+        const center = {
+            textAlign: 'center'
+        };
         return (
-            <form >
+            <form style={center}>
                 <div>
                     <label>Username:</label>
                     <input type='text' ref='username' defaultValue="333"/>

@@ -1,6 +1,6 @@
 import  {
     REGISTER_FAILED, REGISTER_SUCCESSFULLY,
-    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER
 } from './../constants/RegisterActionTypes'
 import {browserHistory} from 'react-router'
 
@@ -8,6 +8,12 @@ import {browserHistory} from 'react-router'
 export function userData(response) {
     return dispatch => {
         dispatch({response, type: USER_DATA});
+    };
+}
+
+export function spinerOn(response) {
+    return dispatch => {
+        dispatch({response, type: SPINER});
     };
 }
 export function loginError(error) {
@@ -146,10 +152,6 @@ export function dataLoad() {
 }
 
 export function dataUpdate(userData) {
-    function parseJSON(res) {
-        return res.json()
-    }
-
     return dispatch =>
         fetch('/api/1/update', {
             method: 'post',
@@ -159,13 +161,5 @@ export function dataUpdate(userData) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(userData)
-        })
-            .then(parseJSON)
-            .then(function (data) {
-                if (data.ok) {
-                    dispatch(userData(data.data));
-                }
-            }).catch(function (error) {
-            console.log('request failed', error)
-        })
+        });
 }

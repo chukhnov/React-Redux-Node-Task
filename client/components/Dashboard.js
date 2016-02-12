@@ -3,20 +3,21 @@ import {store} from './../store/store'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {browserHistory} from 'react-router'
-import Item from './Item'
+
 
 export  default class Dashboard extends Component {
     componentWillMount() {
         this.props.dataLoad();
+        console.log(this.props.spiner)
+
 
     }
 
     render() {
         let calendar = {};
-        let orders = this.props.days; // Тот что с сервера приходит {date, status, user}
-        console.log(orders);
+        let orders = this.props.days;
         let ordersMap = orders.reduceRight((c, el) =>
-            ({...c, [moment(el.date).format('l')]: el}), {});
+            ({...c, [moment(new Date(el.date)).format('l')]: el}), {});
 
         let begin = moment().startOf('week');
         let endOfWeek = moment().endOf('week').add(1, 'day');
@@ -25,28 +26,44 @@ export  default class Dashboard extends Component {
             calendar[begin.format('l')] = {
                 status: false
             };
-
             begin.add(1, 'day')
         }
 
-        return (<div>
+        Object.assign(calendar, ordersMap);
+
+        const styles = {
+            activeStyle: {
+                background: 'grey'
+            },
+            unActiveStyle: {
+                background: 'white'
+            },
+            center:{
+                textAlign: 'center'
+            },
+            width:{
+                width: '85%',
+                margin: '5%'
+            }
+        };
+
+
+        return (<div style={styles.center}>
                 <div>
-                    <h1>Hello!</h1>
-                    <Item/>
                     {isNaN(localStorage.getItem('user')) ? <h1>Logged In</h1> : browserHistory.push('/login')}
                     <button onClick={(e) => {this.handleClick(e)}}>
                         Logout
                     </button>
                 </div>
 
-                <table className="table">
+                <table className="table" style={styles.width}>
                     <tbody>
                         <tr>
-                            {Object.keys(calendar).map(el => (
-                                <td>
-                                    <div onClick={(e) => {this.itemClick(e)}} value={{el}}>{el}</div>
-                                    <hr/>
-                                    <div>{JSON.stringify(calendar[el])}</div>
+                            {Object.keys(calendar).map((el, index) => (
+                                <td key={index} style={(JSON.stringify(calendar[el].status) == 'true') ? styles.activeStyle :
+                                (JSON.stringify(calendar[el].status) == 'false') ? styles.unActiveStyle : null}>
+                                    <div id={JSON.stringify(calendar[el].status)} onClick={(e) => {this.itemClick(e)}}
+                                         value={{el}}>{el}</div>
                                 </td>
                             ))}
                         </tr>
@@ -64,24 +81,26 @@ export  default class Dashboard extends Component {
     }
 
     itemClick(event) {
+        var bool = event.target.id;
         const momentDate = moment(new Date(event.target.value.el));
-        const obj = {
-            date : momentDate._d +1,
+        var obj = {
+            date: momentDate._d,
             status: undefined,
             user: localStorage.getItem('user')
         };
-        if (!event.currentTarget.style.backgroundColor ||
-            event.currentTarget.style.backgroundColor == 'white') {
-            event.currentTarget.style.backgroundColor = 'grey';
-            obj.status = true
+
+        if (bool == 'false') {
+            obj.status = true;
+            this.props.dataUpdate(obj);
+            this.props.dataLoad();
         }
-        else {
-            event.currentTarget.style.backgroundColor = 'white';
-            obj.status = false
+        else if (bool == 'true') {
+            obj.status = false;
+            this.props.dataUpdate(obj);
+            this.props.dataLoad();
         }
-        console.log(event.target.value.el);
-        //console.log(momentDate._d);
-        this.props.dataUpdate(obj)
+        this.props.spi(true);
+        console.log(this.props.spiner)
     }
 
 
@@ -90,12 +109,13 @@ export  default class Dashboard extends Component {
 Dashboard.propTypes = {
     onLogoutClick: PropTypes.func.isRequired,
     dataLoad: PropTypes.func.isRequired,
-    dataUpdate: PropTypes.func.isRequired
+    dataUpdate: PropTypes.func.isRequired,
+    spi: PropTypes.func.isRequired
 };
 
 
 function mapStateToProps(state) {
-    return {days: state.days}
+    return {days: state.days, spiner: state.spiner}
 }
 
 export default connect(mapStateToProps, null, null, {
