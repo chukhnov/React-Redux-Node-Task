@@ -13,12 +13,12 @@ export default class LoginUser extends Component {
             <form style={center}>
                 <div>
                     <label>Username:</label>
-                    <input type='text' ref='username' defaultValue="333"/>
+                    <input type='text' ref='username' defaultValue="admin"/>
                     <br/>
                 </div>
                 <div>
                     <label>Password:</label>
-                    <input type='text' ref='password' defaultValue="333"/>
+                    <input type='text' ref='password' defaultValue="admin"/>
                     <br/>
                 </div>
                 <div>

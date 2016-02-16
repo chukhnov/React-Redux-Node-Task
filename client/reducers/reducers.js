@@ -1,18 +1,19 @@
 import  {
     REGISTER_FAILED, REGISTER_SUCCESSFULLY,
-    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST
 } from './../constants/RegisterActionTypes'
 
 const initialState = {
     userData: {
         username: undefined,
-        admin: false,
         id: null
     },
     isLoggedIn: false,
     error: null,
     days: [],
-    spiner: false
+    spiner: false,
+    admin: false,
+    users: []
 };
 
 export default function user(state = initialState, action) {
@@ -25,6 +26,10 @@ export default function user(state = initialState, action) {
         case SPINER:
             return Object.assign(state, {
                 spiner: action.response
+            });
+        case SAVE_USERS_LIST:
+            return Object.assign(state, {
+                users: action.response
             });
         case REGISTER_SUCCESSFULLY:
             return Object.assign(state, {
@@ -46,6 +51,10 @@ export default function user(state = initialState, action) {
                 },
                 error: null,
                 isLoggedIn: true
+            });
+        case ADMIN:
+            return Object.assign(state, {
+                admin: action.response
             });
         case USER_DATA:
             return Object.assign(state, {

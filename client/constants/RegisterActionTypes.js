@@ -5,3 +5,5 @@ export const LOGIN_FAILED = 'LOGIN_FAILED';
 export const LOGIN_SUCCESSFULLY = 'LOGIN_SUCCESSFULLY';
 export const USER_DATA = 'USER_DATA';
 export const SPINER = 'SPINER';
+export const ADMIN = 'ADMIN';
+export const SAVE_USERS_LIST = 'SAVE_USERS_LIST';

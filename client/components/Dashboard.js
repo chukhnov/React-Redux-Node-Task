@@ -3,13 +3,13 @@ import {store} from './../store/store'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {browserHistory} from 'react-router'
+import AdminPanel from './AdminPanel'
 
 
 export  default class Dashboard extends Component {
     componentWillMount() {
         this.props.dataLoad();
-        console.log(this.props.spiner)
-
+        console.log(this.props.spiner);
 
     }
 
@@ -38,10 +38,10 @@ export  default class Dashboard extends Component {
             unActiveStyle: {
                 background: 'white'
             },
-            center:{
+            center: {
                 textAlign: 'center'
             },
-            width:{
+            width: {
                 width: '85%',
                 margin: '5%'
             }
@@ -50,25 +50,24 @@ export  default class Dashboard extends Component {
 
         return (<div style={styles.center}>
                 <div>
-                    {isNaN(localStorage.getItem('user')) ? <h1>Logged In</h1> : browserHistory.push('/login')}
                     <button onClick={(e) => {this.handleClick(e)}}>
                         Logout
                     </button>
                 </div>
-
-                <table className="table" style={styles.width}>
-                    <tbody>
-                        <tr>
-                            {Object.keys(calendar).map((el, index) => (
-                                <td key={index} style={(JSON.stringify(calendar[el].status) == 'true') ? styles.activeStyle :
+                {localStorage.getItem('admin') == 'true' ? <AdminPanel userList={this.props.userList}/> :
+                    localStorage.getItem('admin') == 'false' ? <table className="table" style={styles.width}>
+                        <tbody>
+                            <tr>
+                                {Object.keys(calendar).map((el, index) => (
+                                    <td key={index} style={(JSON.stringify(calendar[el].status) == 'true') ? styles.activeStyle :
                                 (JSON.stringify(calendar[el].status) == 'false') ? styles.unActiveStyle : null}>
-                                    <div id={JSON.stringify(calendar[el].status)} onClick={(e) => {this.itemClick(e)}}
-                                         value={{el}}>{el}</div>
-                                </td>
-                            ))}
-                        </tr>
-                    </tbody>
-                </table>
+                                        <div id={JSON.stringify(calendar[el].status)} onClick={(e) => {this.itemClick(e)}}
+                                             value={{el}}>{el}</div>
+                                    </td>
+                                ))}
+                            </tr>
+                        </tbody>
+                    </table> : null}
             </div>
         )
 
@@ -110,12 +109,14 @@ Dashboard.propTypes = {
     onLogoutClick: PropTypes.func.isRequired,
     dataLoad: PropTypes.func.isRequired,
     dataUpdate: PropTypes.func.isRequired,
-    spi: PropTypes.func.isRequired
+    spi: PropTypes.func.isRequired,
+    userList: PropTypes.func.isRequired
+
 };
 
 
 function mapStateToProps(state) {
-    return {days: state.days, spiner: state.spiner}
+    return {days: state.days, spiner: state.spiner, admin: state.admin}
 }
 
 export default connect(mapStateToProps, null, null, {

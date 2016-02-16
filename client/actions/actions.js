@@ -1,6 +1,6 @@
 import  {
     REGISTER_FAILED, REGISTER_SUCCESSFULLY,
-    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST
 } from './../constants/RegisterActionTypes'
 import {browserHistory} from 'react-router'
 
@@ -10,7 +10,11 @@ export function userData(response) {
         dispatch({response, type: USER_DATA});
     };
 }
-
+export function saveUsersList(response) {
+    return dispatch => {
+        dispatch({response, type: SAVE_USERS_LIST});
+    };
+}
 export function spinerOn(response) {
     return dispatch => {
         dispatch({response, type: SPINER});
@@ -22,6 +26,13 @@ export function loginError(error) {
 export function loginSuccess(response) {
     return dispatch => {
         dispatch({response, type: LOGIN_SUCCESSFULLY});
+        console.log('LOGIN SUCCESSFULLY');
+        browserHistory.push('/dashboard');
+    };
+}
+export function adminLogin(response) {
+    return dispatch => {
+        dispatch({response, type: ADMIN});
         console.log('LOGIN SUCCESSFULLY');
         browserHistory.push('/dashboard');
     };
@@ -90,16 +101,22 @@ export function login(userData) {
         })
             .then(parseJSON)
             .then(function (data) {
-                if (data.username) {
+                if (data.admin) {
                     localStorage.setItem('user', data._id);
-                    console.log(data._id)
-                    if (localStorage.getItem('user') == data._id) {
-                        dispatch(loginSuccess(data.username));
-                    }
+                    localStorage.setItem('admin', data.admin);
+                    dispatch(adminLogin(data.admin));
+                }
+                else {
+                    if (data.username) {
+                        localStorage.setItem('user', data._id);
+                        if (localStorage.getItem('user') == data._id) {
+                            dispatch(loginSuccess(data.username));
+                        }
 
-                } else {
-                    dispatch(loginError(error));
-                    throw error;
+                    } else {
+                        dispatch(loginError(error));
+                        throw error;
+                    }
                 }
             })
             .catch(error => {
@@ -122,7 +139,7 @@ export function exit() {
             .then(function (data) {
                 if (data.ok) {
                     dispatch(logout());
-                    localStorage.setItem('user', 'String');
+                    localStorage.setItem('admin', false);
 
                 }
             }).catch(function (error) {
@@ -146,6 +163,9 @@ export function dataLoad() {
                 if (data.ok) {
                     dispatch(userData(data.data));
                 }
+                else {
+                    browserHistory.push('/login')
+                }
             }).catch(function (error) {
             console.log('request failed', error)
         })
@@ -162,4 +182,23 @@ export function dataUpdate(userData) {
             },
             body: JSON.stringify(userData)
         });
+}
+
+export function usersLoad() {
+
+    function parseJSON(response) {
+        return response.json()
+    }
+
+    return dispatch =>
+        fetch('/api/1/usersList', {
+            method: "GET",
+            credentials: 'same-origin'
+        })
+            .then(parseJSON)
+            .then(function (data) {
+                dispatch(saveUsersList(data));
+            }).catch(function (error) {
+            console.log('request failed', error)
+        })
 }

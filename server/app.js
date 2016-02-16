@@ -13,8 +13,6 @@ import { getList } from './modules/application/routes/orders.js'
 import session from 'express-session';
 const MongoStore = require('connect-mongo')(session);
 const app = express();
-export var userSession;
-
 
 mongoose.connect('mongodb://localhost/MyDatabase');
 app.use(passport.initialize());
@@ -54,23 +52,25 @@ app.post('/api/1/login', passport.authenticate('local'),
     function (req, res) {
         req.session.user = JSON.stringify(req.user);
         res.json(req.user);
+        console.log(req.user);
 
-        //var order = new Order({
-        //    date: Date(2/10/2016),
-        //    status: true,
-        //    user: req.user._id
-        //});
-        //
-        //console.log(order);
-        //order.save(function (err) {
-        //    if (err) return (err);
-        //});
-
-        //mongoose.connection.collections['orders'].drop( function(err) {
+        //mongoose.connection.collections['users'].drop( function(err) {
         //    console.log('collection dropped');
         //});
 
     });
+
+app.get('/api/1/usersList', function(req, res) {
+    User.find({}, function(err, users) {
+        var userMap = {};
+
+        users.forEach(function(user) {
+            userMap[user._id] = user;
+        });
+
+        res.json(userMap);
+    });
+});
 
 app.post('/api/1/register', (req, res, next) => {
     const username = req.body.username;
