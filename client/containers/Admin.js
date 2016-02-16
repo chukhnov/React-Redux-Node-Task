@@ -1,31 +1,31 @@
 import React, { Component, PropTypes } from 'react'
-import { exit, dataLoad, dataUpdate, spinerOn, usersLoad, updateUser, userDeleteDay } from './../actions/actions'
-import Dashboard from './../components/Dashboard'
+import { exit, dataLoad, dataUpdate, usersLoad, selectedUsers } from './../actions/actions'
+import AdminPanel from './../components/AdminPanel'
 import { store } from './../store/store'
 
 
-class Dash extends Component {
+class Admin extends Component {
     render() {
         return (
             <div>
-                <Dashboard
+                <AdminPanel
                     onLogoutClick={data =>
                     store.dispatch(exit())}
+
                     dataLoad={data =>
                     store.dispatch(dataLoad())}
+
                     dataUpdate={data =>
                     store.dispatch(dataUpdate(data))}
-                    spi={data =>
-                    store.dispatch(spinerOn(data))}
+
                     userList={data =>
                     store.dispatch(usersLoad())}
-                    userUpdate={data =>
-                    store.dispatch(updateUser(data))}
-                    userDayDelete={data =>
-                    store.dispatch(userDeleteDay(data))}/>
+
+                    usersSelected={data =>
+                    store.dispatch(selectedUsers(data))}/>
             </div>
         )
     }
 }
 
-export default Dash
+export default Admin

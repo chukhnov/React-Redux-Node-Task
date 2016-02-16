@@ -3,6 +3,7 @@ import { render } from 'react-dom'
 import Log from './containers/Login'
 import Reg from './containers/Registration'
 import Dash from './containers/Dash'
+import Admin from './containers/Admin'
 import { Router, Route, IndexRoute, browserHistory} from 'react-router/lib';
 import {store} from './store/store'
 import { Provider } from 'react-redux';
@@ -27,6 +28,7 @@ render((
             <Route path="login" component={Log} />
             <Route path="register" component={Reg} />
             <Route path="dashboard" component={Dash} />
+            <Route path="admin" component={Admin} />
         </Route>
     </Router>
         </Provider>

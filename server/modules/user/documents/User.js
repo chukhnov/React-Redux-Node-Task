@@ -12,7 +12,8 @@ var User = new Schema({
     selected: {
         type: Boolean,
         default: false
-    }
+    },
+    days: []
 });
 
 User.plugin(passportLocalMongoose);

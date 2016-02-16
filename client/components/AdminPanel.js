@@ -1,58 +1,116 @@
 import React, {Component, PropTypes} from 'react'
+import {store} from './../store/store'
 import {connect} from 'react-redux'
+import moment from 'moment'
+import {browserHistory} from 'react-router'
 
 export  default class AdminPanel extends Component {
 
     componentWillMount() {
+        localStorage.getItem('admin') == 'false' ? browserHistory.push('/login') :
+            localStorage.getItem('admin') == 'true' ? null : null;
         this.props.userList();
 
     }
 
     render() {
-        const styles = {
-            width: '25%'
-        };
         let users = this.props.users;
-        console.log(this.props.users)
+        let selectedUsers = this.props.selected;
+        console.log(users);
+        console.log(selectedUsers);
+
+        let calend = {};
+        let begin = moment().startOf('week');
+        let endOfWeek = moment().endOf('week').add(1, 'day');
+
+        while (!endOfWeek.isSame(begin, 'day')) {
+            calend[begin.format('l')] = {
+                status: false
+            };
+            begin.add(1, 'day')
+        }
+
+        const styles = {
+            activeStyle: {
+                background: 'grey'
+            },
+            unActiveStyle: {
+                background: 'white'
+            },
+            center: {
+                textAlign: 'center'
+            },
+            width: {
+                width: '85%',
+                margin: '5%'
+            },
+            left: {
+                width: '43%',
+                float: 'left',
+                marginLeft: '5%'
+            }
+        };
+
         return (
-            <div>
-                {Object.keys(users).map((key, index) => (
-                    <p key={index} style={styles}>
-                        <a id={users[key]._id} name={users[key].username} onClick={(e) => {this.itemClick(e)}}>{users[key].username}</a>
-                    </p>))}
+            <div style={styles.center}>
+                <div>
+                    <button onClick={(e) => {this.handleClick(e)}}>
+                        Logout
+                    </button>
+                </div>
+                <table className="table" style={styles.width}>
+                    <tbody>
+                        <tr>
+                            {Object.keys(calend).map((el, index) => (
+                                <td key={index} style={(JSON.stringify(calend[el].status) == 'true') ? styles.activeStyle :
+                                (JSON.stringify(calend[el].status) == 'false') ? styles.unActiveStyle : null}>
+                                    <div id={JSON.stringify(calend[el].status)} onClick={(e) => {this.itemClick(e)}}
+                                         value={{el}}>{el}</div>
+                                </td>
+                            ))}
+                        </tr>
+                    </tbody>
+                </table>
+                <div style={styles.left}>
+                    {Object.keys(selectedUsers).map((key, index) => (
+                        <p key={index} style={styles}>
+                            <a >{selectedUsers[key].username}</a>
+                        </p>))}
+                </div>
+                <div style={styles.left}>
+                    {Object.keys(selectedUsers).map((key, index) => (
+                        <p key={index} style={styles}>
+                            <a >{selectedUsers[key].username}</a>
+                        </p>))}
+                </div>
             </div>
         )
 
     }
 
+    handleClick(e) {
+        e.preventDefault();
+        this.props.onLogoutClick();
+
+    }
+
     itemClick(event) {
-        console.log(event.target.id);
-        console.log(event.target.name);
-        //const momentDate = moment(new Date(event.target.value.el));
-        //var obj = {
-        //    date: momentDate._d,
-        //    status: undefined,
-        //    user: localStorage.getItem('user')
-        //};
-        //
-        //if (bool == 'false') {
-        //    obj.status = true;
-        //    this.props.dataUpdate(obj);
-        //    this.props.dataLoad();
-        //}
-        //else if (bool == 'true') {
-        //    obj.status = false;
-        //    this.props.dataUpdate(obj);
-        //    this.props.dataLoad();
-        //}
-        //this.props.spi(true);
-        //console.log(this.props.spiner)
+        const momentDate = moment(new Date(moment(new Date(event.target.value.el)))).format();
+        const newMomentDate = momentDate.substr(0, 11) + "22:00:00.000Z";
+        console.log(newMomentDate);
+        this.props.usersSelected(newMomentDate);
     }
 
 }
 
+AdminPanel.propTypes = {
+    onLogoutClick: PropTypes.func.isRequired,
+    usersSelected: PropTypes.func.isRequired
+
+};
+
 function mapStateToProps(state) {
-    return {users: state.users}
+    return {users: state.users, selected: state.usersSelected}
 }
 
 export default connect(mapStateToProps, null, null, {

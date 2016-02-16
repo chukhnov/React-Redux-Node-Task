@@ -1,6 +1,6 @@
 import  {
     REGISTER_FAILED, REGISTER_SUCCESSFULLY,
-    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST, USERS_SELECTED
 } from './../constants/RegisterActionTypes'
 
 const initialState = {
@@ -13,7 +13,9 @@ const initialState = {
     days: [],
     spiner: false,
     admin: false,
-    users: []
+    users: [],
+    usersSelected: [],
+    usersUnselected: []
 };
 
 export default function user(state = initialState, action) {
@@ -26,6 +28,16 @@ export default function user(state = initialState, action) {
         case SPINER:
             return Object.assign(state, {
                 spiner: action.response
+            });
+        case USERS_SELECTED:
+            const arr = [];
+            Object.keys(state.users).map((key) => (
+                Object.keys(state.users[key].days).map((i) => (
+                    state.users[key].days[i] == action.response ? arr.push(state.users[key]) : null
+                ))
+            ));
+            return Object.assign(state, {
+                usersSelected: arr
             });
         case SAVE_USERS_LIST:
             return Object.assign(state, {

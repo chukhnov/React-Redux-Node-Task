@@ -2,6 +2,8 @@ import {Router} from 'express'
 import {home} from './home'
 import {getList} from './orders'
 import {updateList} from './ordersUpdate'
+import {updateUser} from '../../user/documents/userUpdate'
+import {deleteDay} from '../../user/documents/userDeleteDay'
 export const routes = Router();
 
 export const getUser = (req, res, next) => {
@@ -24,3 +26,5 @@ const checkAccess = (req, res, next) => {
 
 routes.get('/api/1/orders', checkAccess, getUser, getList);
 routes.post('/api/1/update', updateList);
+routes.post('/api/1/updateUser', updateUser);
+routes.post('/api/1/deleteDay', deleteDay);

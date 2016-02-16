@@ -1,6 +1,6 @@
 import  {
     REGISTER_FAILED, REGISTER_SUCCESSFULLY,
-    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST, USERS_SELECTED
 } from './../constants/RegisterActionTypes'
 import {browserHistory} from 'react-router'
 
@@ -8,6 +8,12 @@ import {browserHistory} from 'react-router'
 export function userData(response) {
     return dispatch => {
         dispatch({response, type: USER_DATA});
+    };
+}
+
+export function selectedUsers(response) {
+    return dispatch => {
+        dispatch({response, type: USERS_SELECTED});
     };
 }
 export function saveUsersList(response) {
@@ -34,7 +40,7 @@ export function adminLogin(response) {
     return dispatch => {
         dispatch({response, type: ADMIN});
         console.log('LOGIN SUCCESSFULLY');
-        browserHistory.push('/dashboard');
+        browserHistory.push('/admin');
     };
 }
 export function registerError(error) {
@@ -174,6 +180,32 @@ export function dataLoad() {
 export function dataUpdate(userData) {
     return dispatch =>
         fetch('/api/1/update', {
+            method: 'post',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+}
+
+export function updateUser(userData) {
+    return dispatch =>
+        fetch('/api/1/updateUser', {
+            method: 'post',
+            credentials: 'same-origin',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
+}
+
+export function userDeleteDay(userData) {
+    return dispatch =>
+        fetch('/api/1/deleteDay', {
             method: 'post',
             credentials: 'same-origin',
             headers: {

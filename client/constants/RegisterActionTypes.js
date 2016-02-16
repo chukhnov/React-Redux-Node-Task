@@ -7,3 +7,4 @@ export const USER_DATA = 'USER_DATA';
 export const SPINER = 'SPINER';
 export const ADMIN = 'ADMIN';
 export const SAVE_USERS_LIST = 'SAVE_USERS_LIST';
+export const USERS_SELECTED = 'USERS_SELECTED';

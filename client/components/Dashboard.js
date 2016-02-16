@@ -3,12 +3,11 @@ import {store} from './../store/store'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {browserHistory} from 'react-router'
-import AdminPanel from './AdminPanel'
-
 
 export  default class Dashboard extends Component {
     componentWillMount() {
         this.props.dataLoad();
+        this.props.userList();
         console.log(this.props.spiner);
 
     }
@@ -16,6 +15,7 @@ export  default class Dashboard extends Component {
     render() {
         let calendar = {};
         let orders = this.props.days;
+        console.log(orders);
         let ordersMap = orders.reduceRight((c, el) =>
             ({...c, [moment(new Date(el.date)).format('l')]: el}), {});
 
@@ -54,8 +54,7 @@ export  default class Dashboard extends Component {
                         Logout
                     </button>
                 </div>
-                {localStorage.getItem('admin') == 'true' ? <AdminPanel userList={this.props.userList}/> :
-                    localStorage.getItem('admin') == 'false' ? <table className="table" style={styles.width}>
+                <table className="table" style={styles.width}>
                         <tbody>
                             <tr>
                                 {Object.keys(calendar).map((el, index) => (
@@ -67,7 +66,7 @@ export  default class Dashboard extends Component {
                                 ))}
                             </tr>
                         </tbody>
-                    </table> : null}
+                    </table>
             </div>
         )
 
@@ -90,16 +89,22 @@ export  default class Dashboard extends Component {
 
         if (bool == 'false') {
             obj.status = true;
+            console.log(obj)
             this.props.dataUpdate(obj);
+            this.props.userUpdate({
+                date: momentDate.add(1, 'day')._d,
+                user: localStorage.getItem('user')
+            });
             this.props.dataLoad();
         }
         else if (bool == 'true') {
             obj.status = false;
             this.props.dataUpdate(obj);
+            this.props.userDayDelete(obj);
             this.props.dataLoad();
         }
         this.props.spi(true);
-        console.log(this.props.spiner)
+        console.log(this.props.spiner);
     }
 
 
@@ -109,14 +114,15 @@ Dashboard.propTypes = {
     onLogoutClick: PropTypes.func.isRequired,
     dataLoad: PropTypes.func.isRequired,
     dataUpdate: PropTypes.func.isRequired,
+    userUpdate: PropTypes.func.isRequired,
+    userDayDelete: PropTypes.func.isRequired,
     spi: PropTypes.func.isRequired,
     userList: PropTypes.func.isRequired
-
 };
 
 
 function mapStateToProps(state) {
-    return {days: state.days, spiner: state.spiner, admin: state.admin}
+    return {days: state.days, spiner: state.spiner, admin: state.admin, users: state.users}
 }
 
 export default connect(mapStateToProps, null, null, {
