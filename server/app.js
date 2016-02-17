@@ -69,6 +69,7 @@ app.get('/api/1/usersList', function(req, res) {
         });
 
         res.json(userMap);
+        console.log(userMap)
     });
 });
 

@@ -7,15 +7,12 @@ import {browserHistory} from 'react-router'
 export  default class Dashboard extends Component {
     componentWillMount() {
         this.props.dataLoad();
-        this.props.userList();
-        console.log(this.props.spiner);
 
     }
 
     render() {
         let calendar = {};
         let orders = this.props.days;
-        console.log(orders);
         let ordersMap = orders.reduceRight((c, el) =>
             ({...c, [moment(new Date(el.date)).format('l')]: el}), {});
 
@@ -80,21 +77,17 @@ export  default class Dashboard extends Component {
 
     itemClick(event) {
         var bool = event.target.id;
-        const momentDate = moment(new Date(event.target.value.el));
+        const momentDate = event.target.value.el;
         var obj = {
-            date: momentDate._d,
+            date: momentDate,
             status: undefined,
             user: localStorage.getItem('user')
         };
 
         if (bool == 'false') {
             obj.status = true;
-            console.log(obj)
             this.props.dataUpdate(obj);
-            this.props.userUpdate({
-                date: momentDate.add(1, 'day')._d,
-                user: localStorage.getItem('user')
-            });
+            this.props.userUpdate(obj);
             this.props.dataLoad();
         }
         else if (bool == 'true') {
@@ -104,7 +97,6 @@ export  default class Dashboard extends Component {
             this.props.dataLoad();
         }
         this.props.spi(true);
-        console.log(this.props.spiner);
     }
 
 
@@ -122,7 +114,7 @@ Dashboard.propTypes = {
 
 
 function mapStateToProps(state) {
-    return {days: state.days, spiner: state.spiner, admin: state.admin, users: state.users}
+    return {days: state.days, spiner: state.spiner}
 }
 
 export default connect(mapStateToProps, null, null, {

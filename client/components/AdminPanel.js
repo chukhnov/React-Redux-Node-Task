@@ -16,8 +16,27 @@ export  default class AdminPanel extends Component {
     render() {
         let users = this.props.users;
         let selectedUsers = this.props.selected;
-        console.log(users);
-        console.log(selectedUsers);
+        let trueUsers = this.props.usersTrue;
+
+        Object.keys(users).map((i) => (
+            users[i].selected = false
+        ));
+
+        Object.keys(selectedUsers).map((i) => (
+            selectedUsers[i].selected = true
+        ));
+        let arr = [];
+        let store = {};
+        Object.keys(trueUsers).map((key, index) => (
+            !trueUsers[key].selected && !trueUsers[key].admin ?
+                arr.push(trueUsers[key].username) : null
+        ));
+
+        for (var i = 0; i < arr.length; i++) {
+            var key = arr[i];
+            store[key] = true;
+        }
+        console.log(Object.keys(store));
 
         let calend = {};
         let begin = moment().startOf('week');
@@ -48,6 +67,11 @@ export  default class AdminPanel extends Component {
                 width: '43%',
                 float: 'left',
                 marginLeft: '5%'
+            },
+            right: {
+                width: '43%',
+                float: 'right',
+                marginRight: '10%'
             }
         };
 
@@ -77,10 +101,12 @@ export  default class AdminPanel extends Component {
                             <a >{selectedUsers[key].username}</a>
                         </p>))}
                 </div>
-                <div style={styles.left}>
-                    {Object.keys(selectedUsers).map((key, index) => (
+                <div style={styles.right}>
+                    {Object.keys(store).map((key, index) => (
                         <p key={index} style={styles}>
-                            <a >{selectedUsers[key].username}</a>
+                            <input type="checkbox"
+                                   onChange={this.onChange} value={key}/>
+                            <a>{key}</a>
                         </p>))}
                 </div>
             </div>
@@ -94,11 +120,14 @@ export  default class AdminPanel extends Component {
 
     }
 
+    onChange(event) {
+        console.log(event.target.value);
+    }
+
     itemClick(event) {
-        const momentDate = moment(new Date(moment(new Date(event.target.value.el)))).format();
-        const newMomentDate = momentDate.substr(0, 11) + "22:00:00.000Z";
-        console.log(newMomentDate);
-        this.props.usersSelected(newMomentDate);
+
+        const momentDate = event.target.value.el;
+        this.props.usersSelected(momentDate);
     }
 
 }
@@ -110,7 +139,7 @@ AdminPanel.propTypes = {
 };
 
 function mapStateToProps(state) {
-    return {users: state.users, selected: state.usersSelected}
+    return {users: state.users, selected: state.usersSelected, usersTrue: state.usersTrue}
 }
 
 export default connect(mapStateToProps, null, null, {
