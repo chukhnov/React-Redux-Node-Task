@@ -7,24 +7,17 @@ import {browserHistory} from 'react-router'
 export  default class Dashboard extends Component {
     componentWillMount() {
         this.props.dataLoad();
+        this.props.createCalendar();
 
     }
 
     render() {
-        let calendar = {};
+
         let orders = this.props.days;
+        let calendar = this.props.calendar;
         let ordersMap = orders.reduceRight((c, el) =>
             ({...c, [moment(new Date(el.date)).format('l')]: el}), {});
 
-        let begin = moment().startOf('week');
-        let endOfWeek = moment().endOf('week').add(1, 'day');
-
-        while (!endOfWeek.isSame(begin, 'day')) {
-            calendar[begin.format('l')] = {
-                status: false
-            };
-            begin.add(1, 'day')
-        }
 
         Object.assign(calendar, ordersMap);
 
@@ -52,18 +45,18 @@ export  default class Dashboard extends Component {
                     </button>
                 </div>
                 <table className="table" style={styles.width}>
-                        <tbody>
-                            <tr>
-                                {Object.keys(calendar).map((el, index) => (
-                                    <td key={index} style={(JSON.stringify(calendar[el].status) == 'true') ? styles.activeStyle :
+                    <tbody>
+                        <tr>
+                            {Object.keys(calendar).map((el, index) => (
+                                <td key={index} style={(JSON.stringify(calendar[el].status) == 'true') ? styles.activeStyle :
                                 (JSON.stringify(calendar[el].status) == 'false') ? styles.unActiveStyle : null}>
-                                        <div id={JSON.stringify(calendar[el].status)} onClick={(e) => {this.itemClick(e)}}
-                                             value={{el}}>{el}</div>
-                                    </td>
-                                ))}
-                            </tr>
-                        </tbody>
-                    </table>
+                                    <div id={JSON.stringify(calendar[el].status)} onClick={(e) => {this.itemClick(e)}}
+                                         value={{el}}>{el}</div>
+                                </td>
+                            ))}
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         )
 
@@ -107,6 +100,7 @@ Dashboard.propTypes = {
     dataLoad: PropTypes.func.isRequired,
     dataUpdate: PropTypes.func.isRequired,
     userUpdate: PropTypes.func.isRequired,
+    createCalendar: PropTypes.func.isRequired,
     userDayDelete: PropTypes.func.isRequired,
     spi: PropTypes.func.isRequired,
     userList: PropTypes.func.isRequired
@@ -114,7 +108,11 @@ Dashboard.propTypes = {
 
 
 function mapStateToProps(state) {
-    return {days: state.days, spiner: state.spiner}
+    return {
+        days: state.days,
+        spiner: state.spiner,
+        calendar: state.calendar
+    }
 }
 
 export default connect(mapStateToProps, null, null, {

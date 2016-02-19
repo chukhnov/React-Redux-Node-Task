@@ -3,6 +3,7 @@ import {store} from './../store/store'
 import {connect} from 'react-redux'
 import moment from 'moment'
 import {browserHistory} from 'react-router'
+import {Button} from 'react-bootstrap';
 
 export  default class AdminPanel extends Component {
 
@@ -10,44 +11,15 @@ export  default class AdminPanel extends Component {
         localStorage.getItem('admin') == 'false' ? browserHistory.push('/login') :
             localStorage.getItem('admin') == 'true' ? null : null;
         this.props.userList();
+        this.props.createCalendar();
+
 
     }
 
     render() {
-        let users = this.props.users;
-        let selectedUsers = this.props.selected;
-        let trueUsers = this.props.usersTrue;
 
-        Object.keys(users).map((i) => (
-            users[i].selected = false
-        ));
-
-        Object.keys(selectedUsers).map((i) => (
-            selectedUsers[i].selected = true
-        ));
-        let arr = [];
-        let store = {};
-        Object.keys(trueUsers).map((key, index) => (
-            !trueUsers[key].selected && !trueUsers[key].admin ?
-                arr.push(trueUsers[key].username) : null
-        ));
-
-        for (var i = 0; i < arr.length; i++) {
-            var key = arr[i];
-            store[key] = true;
-        }
-        console.log(Object.keys(store));
-
-        let calend = {};
-        let begin = moment().startOf('week');
-        let endOfWeek = moment().endOf('week').add(1, 'day');
-
-        while (!endOfWeek.isSame(begin, 'day')) {
-            calend[begin.format('l')] = {
-                status: false
-            };
-            begin.add(1, 'day')
-        }
+        let selectedUsers = this.props.usersTrue;
+        let calend = this.props.calendar;
 
         const styles = {
             activeStyle: {
@@ -64,32 +36,38 @@ export  default class AdminPanel extends Component {
                 margin: '5%'
             },
             left: {
-                width: '43%',
-                float: 'left',
-                marginLeft: '5%'
+                position: 'absolute',
+                left: '30%'
             },
             right: {
-                width: '43%',
-                float: 'right',
-                marginRight: '10%'
+                position: 'absolute',
+                left: '60%'
+            },
+            all: {
+                width: '115px',
+                height: '35px',
+                fontSize: '25px'
             }
         };
 
         return (
             <div style={styles.center}>
                 <div>
-                    <button onClick={(e) => {this.handleClick(e)}}>
+                    <br></br>
+                    <Button bsSize="small" bsStyle="primary" onClick={(e) => {this.onLogoutClick(e)}}>
                         Logout
-                    </button>
+                    </Button>
                 </div>
                 <table className="table" style={styles.width}>
                     <tbody>
                         <tr>
                             {Object.keys(calend).map((el, index) => (
-                                <td key={index} style={(JSON.stringify(calend[el].status) == 'true') ? styles.activeStyle :
-                                (JSON.stringify(calend[el].status) == 'false') ? styles.unActiveStyle : null}>
-                                    <div id={JSON.stringify(calend[el].status)} onClick={(e) => {this.itemClick(e)}}
-                                         value={{el}}>{el}</div>
+                                <td key={index}>
+                                    <Button bsSize="xsmall" className={JSON.stringify(calend[el].status) == "true" ?
+                                     'active' : JSON.stringify(calend[el].status) == "false" ? null : null} >
+                                        <div style={styles.all} onClick={(e) => {this.itemClick(e)}}
+                                             value={{el}}>{el}</div>
+                                    </Button>
                                 </td>
                             ))}
                         </tr>
@@ -97,49 +75,100 @@ export  default class AdminPanel extends Component {
                 </table>
                 <div style={styles.left}>
                     {Object.keys(selectedUsers).map((key, index) => (
-                        <p key={index} style={styles}>
-                            <a >{selectedUsers[key].username}</a>
-                        </p>))}
+                        selectedUsers[key].selected ?
+                            <p key={index} style={styles}>
+                                <Button bsSize="xsmall" bsStyle="danger" value={selectedUsers[key]._id}
+                                        onClick={(e) => {this.deleteCurrentDay(e)}}>
+                                    Delete current day
+                                </Button>&nbsp;&nbsp;
+                                {selectedUsers[key].selected ? <span>{selectedUsers[key].username} </span> : null }
+                            </p> : null  ))}
                 </div>
                 <div style={styles.right}>
-                    {Object.keys(store).map((key, index) => (
-                        <p key={index} style={styles}>
-                            <input type="checkbox"
-                                   onChange={this.onChange} value={key}/>
-                            <a>{key}</a>
-                        </p>))}
+                    {Object.keys(selectedUsers).map((key, index) => (
+                        !selectedUsers[key].selected && !selectedUsers[key].admin ?
+                            <p key={index} style={styles}>
+                                <Button bsSize="xsmall" bsStyle="success" value={selectedUsers[key]._id}
+                                        onClick={(e) => {this.addCurrentDay(e)}}>
+                                    Add current day
+                                </Button>&nbsp;&nbsp;
+                                <span>{selectedUsers[key].username} </span>
+                            </p> : null  ))}
                 </div>
             </div>
         )
 
     }
 
-    handleClick(e) {
+    onLogoutClick(e) {
         e.preventDefault();
         this.props.onLogoutClick();
+    }
+
+    addCurrentDay(event) {
+        var obj = {
+            date: this.props.currentDay,
+            status: true,
+            user: event.target.value
+        };
+        this.props.dataUpdate(obj);
+        this.props.userUpdate(obj);
+        this.props.addCurrentDay(obj);
+        this.props.userList();
+
 
     }
 
-    onChange(event) {
-        console.log(event.target.value);
+    deleteCurrentDay(event) {
+        var obj = {
+            date: this.props.currentDay,
+            status: false,
+            user: event.target.value
+        };
+
+        this.props.dataUpdate(obj);
+        this.props.userDayDelete(obj);
+        this.props.removeCurrentDay(obj);
+        this.props.userList();
+
+
     }
 
     itemClick(event) {
-
+        this.props.falseUsers();
         const momentDate = event.target.value.el;
+        localStorage.setItem('momentDate', momentDate);
         this.props.usersSelected(momentDate);
+        this.props.userList();
+        this.props.createCalendar();
+        this.props.trueCalendarDay();
     }
 
 }
 
 AdminPanel.propTypes = {
+    dataUpdate: PropTypes.func.isRequired,
+    userUpdate: PropTypes.func.isRequired,
+    createCalendar: PropTypes.func.isRequired,
     onLogoutClick: PropTypes.func.isRequired,
-    usersSelected: PropTypes.func.isRequired
+    usersSelected: PropTypes.func.isRequired,
+    userDayDelete: PropTypes.func.isRequired,
+    userList: PropTypes.func.isRequired,
+    falseUsers: PropTypes.func.isRequired,
+    removeCurrentDay: PropTypes.func.isRequired,
+    addCurrentDay: PropTypes.func.isRequired,
+    trueCalendarDay: PropTypes.func.isRequired
 
 };
 
 function mapStateToProps(state) {
-    return {users: state.users, selected: state.usersSelected, usersTrue: state.usersTrue}
+    return {
+        users: state.users,
+        selected: state.usersSelected,
+        usersTrue: state.usersTrue,
+        currentDay: state.currentDay,
+        calendar: state.calendar
+    }
 }
 
 export default connect(mapStateToProps, null, null, {

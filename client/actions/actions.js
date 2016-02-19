@@ -1,13 +1,46 @@
 import  {
     REGISTER_FAILED, REGISTER_SUCCESSFULLY,
-    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA, LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST, USERS_SELECTED
-} from './../constants/RegisterActionTypes'
+    LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA,
+    LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST,
+    USERS_SELECTED, FALSE_USERS,
+    REMOVE_CURRENT_DAY, ADD_CURRENT_DAY,
+    CREATE_CALENDAR, TRUE_CALENDAR_DAY} from './../constants/RegisterActionTypes'
 import {browserHistory} from 'react-router'
 
 
 export function userData(response) {
     return dispatch => {
         dispatch({response, type: USER_DATA});
+    };
+}
+
+export function createCalendar() {
+    return dispatch => {
+        dispatch({type: CREATE_CALENDAR});
+    };
+}
+
+export function falseUsers() {
+    return dispatch => {
+        dispatch({type: FALSE_USERS});
+    };
+}
+
+export function removeCurrentDay(response) {
+    return dispatch => {
+        dispatch({response, type: REMOVE_CURRENT_DAY});
+    };
+}
+
+export function addCurrentDay(response) {
+    return dispatch => {
+        dispatch({response, type: ADD_CURRENT_DAY});
+    };
+}
+
+export function trueCalendarDay(response) {
+    return dispatch => {
+        dispatch({response, type: TRUE_CALENDAR_DAY});
     };
 }
 
@@ -204,6 +237,8 @@ export function updateUser(userData) {
 }
 
 export function userDeleteDay(userData) {
+
+
     return dispatch =>
         fetch('/api/1/deleteDay', {
             method: 'post',

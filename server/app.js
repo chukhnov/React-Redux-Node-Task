@@ -52,7 +52,6 @@ app.post('/api/1/login', passport.authenticate('local'),
     function (req, res) {
         req.session.user = JSON.stringify(req.user);
         res.json(req.user);
-        console.log(req.user);
 
         //mongoose.connection.collections['users'].drop( function(err) {
         //    console.log('collection dropped');
@@ -69,7 +68,6 @@ app.get('/api/1/usersList', function(req, res) {
         });
 
         res.json(userMap);
-        console.log(userMap)
     });
 });
 

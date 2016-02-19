@@ -1,5 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import { exit, dataLoad, dataUpdate, usersLoad, selectedUsers } from './../actions/actions'
+import { exit, dataUpdate, usersLoad,
+    selectedUsers, updateUser,
+    userDeleteDay, falseUsers,
+    removeCurrentDay, addCurrentDay,
+    createCalendar, trueCalendarDay } from './../actions/actions'
 import AdminPanel from './../components/AdminPanel'
 import { store } from './../store/store'
 
@@ -12,11 +16,29 @@ class Admin extends Component {
                     onLogoutClick={data =>
                     store.dispatch(exit())}
 
-                    dataLoad={data =>
-                    store.dispatch(dataLoad())}
+                    createCalendar={data =>
+                    store.dispatch(createCalendar())}
+
+                    trueCalendarDay={data =>
+                    store.dispatch(trueCalendarDay())}
+
+                    removeCurrentDay={data =>
+                    store.dispatch(removeCurrentDay(data))}
+
+                    addCurrentDay={data =>
+                    store.dispatch(addCurrentDay(data))}
+
+                    falseUsers={data =>
+                    store.dispatch(falseUsers())}
+
+                    userDayDelete={data =>
+                    store.dispatch(userDeleteDay(data))}
 
                     dataUpdate={data =>
                     store.dispatch(dataUpdate(data))}
+
+                    userUpdate={data =>
+                    store.dispatch(updateUser(data))}
 
                     userList={data =>
                     store.dispatch(usersLoad())}
