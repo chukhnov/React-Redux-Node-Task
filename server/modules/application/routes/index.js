@@ -1,7 +1,6 @@
 import {Router} from 'express'
-import {home} from './home'
-import {getList} from './orders'
-import {updateList} from './ordersUpdate'
+import {getList} from './../documents/orders'
+import {updateList} from './../documents/ordersUpdate'
 import {updateUser} from '../../user/documents/userUpdate'
 import {deleteDay} from '../../user/documents/userDeleteDay'
 export const routes = Router();

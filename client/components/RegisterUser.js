@@ -5,6 +5,10 @@ import { Button, Input } from 'react-bootstrap';
 
 export default class RegisterUser extends Component {
 
+    componentWillMount() {
+        localStorage.getItem('user') !== 'null' ? browserHistory.push('/dashboard') : null;
+        localStorage.getItem('admin') == 'true' ? browserHistory.push('/admin') : null
+    }
 
     render() {
         const styles = {
@@ -31,7 +35,7 @@ export default class RegisterUser extends Component {
                     <input style={styles.textArea} type='text' ref='username' />
                 </div>
                 <div>
-                    <input style={styles.textArea} type='text' ref='password' />
+                    <input style={styles.textArea} type='password' ref='password' />
                 </div>
                 <div>
                     <br/>

@@ -6,6 +6,11 @@ import {Button} from 'react-bootstrap'
 
 export default class LoginUser extends Component {
 
+    componentWillMount() {
+        localStorage.getItem('user') !== 'null' ? browserHistory.push('/dashboard') : null;
+        localStorage.getItem('admin') == 'true' ? browserHistory.push('/admin') : null
+    }
+
     render() {
         const styles = {
             wellStyles: {
@@ -31,7 +36,7 @@ export default class LoginUser extends Component {
                     <input style={styles.textArea} type='text' ref='username' defaultValue="admin"/>
                 </div>
                 <div>
-                    <input style={styles.textArea} type='text' ref='password' defaultValue="admin"/>
+                    <input style={styles.textArea} type='password' ref='password' defaultValue="admin"/>
                 </div>
                 <div>
                     <br/>

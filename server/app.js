@@ -9,7 +9,7 @@ import passport from 'passport'
 import cookieParser from 'cookie-parser'
 import User from './modules/user/documents/User.js'
 import {Order} from './modules/application/documents/Order.js'
-import { getList } from './modules/application/routes/orders.js'
+import { getList } from './modules/application/documents/orders.js'
 import session from 'express-session';
 const MongoStore = require('connect-mongo')(session);
 const app = express();
@@ -44,18 +44,10 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-app.get('/api/1/profile', (req, res, next) => {
-    res.json(req.session || {})
-});
-
 app.post('/api/1/login', passport.authenticate('local'),
     function (req, res) {
         req.session.user = JSON.stringify(req.user);
         res.json(req.user);
-
-        //mongoose.connection.collections['users'].drop( function(err) {
-        //    console.log('collection dropped');
-        //});
 
     });
 

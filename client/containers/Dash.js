@@ -1,7 +1,11 @@
-import React, { Component, PropTypes } from 'react'
-import { exit, dataLoad, dataUpdate, spinerOn, usersLoad, updateUser, userDeleteDay, createCalendar } from './../actions/actions'
+import React, {Component, PropTypes} from 'react'
+import {
+    exit, dataLoad, dataUpdate, spinerOn, usersLoad,
+    updateUser, userDeleteDay, createCalendar, createCalendarPlusWeek,
+    createCalendarMinusWeek
+} from './../actions/actions'
 import Dashboard from './../components/Dashboard'
-import { store } from './../store/store'
+import {store} from './../store/store'
 
 
 class Dash extends Component {
@@ -20,6 +24,12 @@ class Dash extends Component {
 
                     createCalendar={data =>
                     store.dispatch(createCalendar())}
+
+                    createCalendarPlusWeek={data =>
+                    store.dispatch(createCalendarPlusWeek())}
+
+                    createCalendarMinusWeek={data =>
+                    store.dispatch(createCalendarMinusWeek())}
 
                     spi={data =>
                     store.dispatch(spinerOn(data))}

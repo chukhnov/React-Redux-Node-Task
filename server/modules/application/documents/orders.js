@@ -1,4 +1,4 @@
-import {Order} from './../documents/Order'
+import {Order} from './Order'
 
 
 export function getList(req, res, next) {

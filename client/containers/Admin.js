@@ -3,7 +3,8 @@ import { exit, dataUpdate, usersLoad,
     selectedUsers, updateUser,
     userDeleteDay, falseUsers,
     removeCurrentDay, addCurrentDay,
-    createCalendar, trueCalendarDay } from './../actions/actions'
+    createCalendar, trueCalendarDay, createCalendarPlusWeek,
+    createCalendarMinusWeek } from './../actions/actions'
 import AdminPanel from './../components/AdminPanel'
 import { store } from './../store/store'
 
@@ -18,6 +19,12 @@ class Admin extends Component {
 
                     createCalendar={data =>
                     store.dispatch(createCalendar())}
+
+                    createCalendarPlusWeek={data =>
+                    store.dispatch(createCalendarPlusWeek())}
+
+                    createCalendarMinusWeek={data =>
+                    store.dispatch(createCalendarMinusWeek())}
 
                     trueCalendarDay={data =>
                     store.dispatch(trueCalendarDay())}

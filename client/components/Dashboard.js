@@ -3,11 +3,14 @@ import {store} from './../store/store'
 import moment from 'moment'
 import {connect} from 'react-redux'
 import {browserHistory} from 'react-router'
+import {Button} from 'react-bootstrap';
+
 
 export  default class Dashboard extends Component {
     componentWillMount() {
-        this.props.dataLoad();
+        localStorage.getItem('user') == 'null' ? browserHistory.push('/login') : this.props.dataLoad();
         this.props.createCalendar();
+
 
     }
 
@@ -15,48 +18,76 @@ export  default class Dashboard extends Component {
 
         let orders = this.props.days;
         let calendar = this.props.calendar;
+
         let ordersMap = orders.reduceRight((c, el) =>
             ({...c, [moment(new Date(el.date)).format('l')]: el}), {});
 
 
-        Object.assign(calendar, ordersMap);
+        let calendarNew = Object.assign({}, calendar, ordersMap);
+        let newCalendar= {};
+        Object.keys(calendar).map((i) => (
+            Object.keys(calendarNew).map((key) => (
+                i == key ? newCalendar[key] = calendarNew[key] : null
+            ))
+        ));
 
         const styles = {
-            activeStyle: {
-                background: 'grey'
-            },
-            unActiveStyle: {
-                background: 'white'
-            },
             center: {
                 textAlign: 'center'
             },
             width: {
                 width: '85%',
                 margin: '5%'
+            },
+            all: {
+                width: '115px',
+                height: '35px',
+                fontSize: '25px'
+            },
+            left: {
+                position: 'absolute',
+                left: '20%'
+            },
+            right: {
+                position: 'absolute',
+                left: '70%'
+            },
+            wellStyles: {
+                maxWidth: 400,
+                margin: '0 auto 10px',
+                textAlign: 'center'
             }
         };
 
 
         return (<div style={styles.center}>
                 <div>
-                    <button onClick={(e) => {this.handleClick(e)}}>
+                    <br></br>
+                    <Button bsSize="large" bsStyle="default" onClick={(e) => {this.handleClick(e)}}>
                         Logout
-                    </button>
+                    </Button>
                 </div>
                 <table className="table" style={styles.width}>
-                    <tbody>
+                    <tbody className="well" style={styles.wellStyles}>
                         <tr>
-                            {Object.keys(calendar).map((el, index) => (
-                                <td key={index} style={(JSON.stringify(calendar[el].status) == 'true') ? styles.activeStyle :
-                                (JSON.stringify(calendar[el].status) == 'false') ? styles.unActiveStyle : null}>
-                                    <div id={JSON.stringify(calendar[el].status)} onClick={(e) => {this.itemClick(e)}}
-                                         value={{el}}>{el}</div>
+                            {Object.keys(newCalendar).map((el, index) => (
+                                <td key={index}>
+                                    <Button bsSize="xsmall" bsStyle={JSON.stringify(newCalendar[el].status) == "true" ?
+                                     "success" : JSON.stringify(newCalendar[el].status) == "false" ? null : null}>
+                                        <div className={JSON.stringify(el)} id={JSON.stringify(newCalendar[el].status)} style={styles.all}
+                                             onClick={(e) => {this.itemClick(e)}}>{el}</div>
+                                    </Button>
                                 </td>
                             ))}
                         </tr>
                     </tbody>
                 </table>
+                <Button style={styles.left} bsSize="xsmall" bsStyle="danger" onClick={(e) => {this.minusWeek(e)}}>
+                   Previous week
+                </Button>
+                <Button style={styles.right} bsSize="xsmall" bsStyle="primary" onClick={(e) => {this.plusWeek(e)}}>
+                    Next week
+                </Button>
             </div>
         )
 
@@ -68,9 +99,21 @@ export  default class Dashboard extends Component {
 
     }
 
+    plusWeek(e) {
+        e.preventDefault();
+        this.props.createCalendarPlusWeek();
+
+    }
+    minusWeek(e) {
+        e.preventDefault();
+        this.props.createCalendarMinusWeek();
+
+    }
+
     itemClick(event) {
-        var bool = event.target.id;
-        const momentDate = event.target.value.el;
+        let bool = event.target.id;
+        let res = event.target.className;
+        let momentDate = res.substring(1, res.length - 1);
         var obj = {
             date: momentDate,
             status: undefined,
@@ -101,6 +144,8 @@ Dashboard.propTypes = {
     dataUpdate: PropTypes.func.isRequired,
     userUpdate: PropTypes.func.isRequired,
     createCalendar: PropTypes.func.isRequired,
+    createCalendarPlusWeek: PropTypes.func.isRequired,
+    createCalendarMinusWeek: PropTypes.func.isRequired,
     userDayDelete: PropTypes.func.isRequired,
     spi: PropTypes.func.isRequired,
     userList: PropTypes.func.isRequired
@@ -118,4 +163,3 @@ function mapStateToProps(state) {
 export default connect(mapStateToProps, null, null, {
     pure: false
 })(Dashboard)
-//export default Dashboard

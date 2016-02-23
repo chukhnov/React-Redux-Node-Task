@@ -4,7 +4,9 @@ import  {
     LOGIN_FAILED, LOGIN_SUCCESSFULLY, USER_DATA,
     LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST, USERS_SELECTED,
     FALSE_USERS, REMOVE_CURRENT_DAY, ADD_CURRENT_DAY,
-    CREATE_CALENDAR, TRUE_CALENDAR_DAY} from './../constants/RegisterActionTypes'
+    CREATE_CALENDAR, TRUE_CALENDAR_DAY, CREATE_CALENDAR_PLUS_WEEK,
+    CREATE_CALENDAR_MINUS_WEEK
+} from './../constants/RegisterActionTypes'
 
 const initialState = {
     userData: {
@@ -20,7 +22,10 @@ const initialState = {
     usersSelected: [],
     usersTrue: [],
     currentDay: undefined,
-    calendar: {}
+    calendar: {},
+    copyCalendar: undefined,
+    startWeek: 7,
+    minusWeek: 7
 };
 
 export default function user(state = initialState, action) {
@@ -34,7 +39,8 @@ export default function user(state = initialState, action) {
             let newCalendar = {};
             Object.assign(newCalendar, state.calendar);
             Object.keys(newCalendar).map((key) => (
-            key == state.currentDay ? newCalendar[key] = {status: true } : null
+                key == localStorage.getItem('momentDate') ? newCalendar[key] = {status: true} :
+                    key !== localStorage.getItem('momentDate') ? newCalendar[key] = {status: false} : null
             ));
             return Object.assign(state, {
                 calendar: newCalendar
@@ -50,13 +56,52 @@ export default function user(state = initialState, action) {
                 };
                 begin.add(1, 'day')
             }
+
             return Object.assign(state, {
                 calendar: calendar
+            });
+        case CREATE_CALENDAR_PLUS_WEEK:
+
+            let calendarPlus = {};
+            let beginCalendarPlus = moment().startOf('week').add(state.startWeek, 'day');
+            let endOfWeekCalendarPlus = moment().endOf('week').add(state.startWeek + 1, 'day');
+
+            while (!endOfWeekCalendarPlus.isSame(beginCalendarPlus, 'day')) {
+                calendarPlus[beginCalendarPlus.format('l')] = {
+                    status: false
+                };
+                beginCalendarPlus.add(1, 'day')
+            }
+            let startDays = state.startWeek + 7;
+            let minusDays = state.minusWeek - 7;
+            return Object.assign(state, {
+                calendar: calendarPlus,
+                startWeek: startDays,
+                minusWeek: minusDays
+            });
+        case CREATE_CALENDAR_MINUS_WEEK:
+
+            let calendarMinus = {};
+            let beginCalendarMinus = moment().startOf('week').subtract(state.minusWeek, 'day');
+            let endOfWeekCalendarMinus = moment().endOf('week').subtract(state.minusWeek - 1 , 'day');
+
+            while (!endOfWeekCalendarMinus.isSame(beginCalendarMinus, 'day')) {
+                calendarMinus[beginCalendarMinus.format('l')] = {
+                    status: false
+                };
+                beginCalendarMinus.add(1, 'day')
+            }
+            let startDaysMinus = state.startWeek - 7;
+            let daysMinus = state.minusWeek + 7;
+            return Object.assign(state, {
+                calendar: calendarMinus,
+                startWeek: startDaysMinus,
+                minusWeek: daysMinus
             });
         case REMOVE_CURRENT_DAY:
             let removeUser = {};
             Object.keys(state.usersTrue).map((key) => (
-               state.usersTrue[key]._id == action.response.user ? removeUser[key] = state.usersTrue[key] : null
+                state.usersTrue[key]._id == action.response.user ? removeUser[key] = state.usersTrue[key] : null
             ));
             Object.keys(removeUser).map((i) => (
                 removeUser[i].selected = false
@@ -68,7 +113,7 @@ export default function user(state = initialState, action) {
         case ADD_CURRENT_DAY:
             let addUser = {};
             Object.keys(state.usersTrue).map((key) => (
-               state.usersTrue[key]._id == action.response.user ? addUser[key] = state.usersTrue[key] : null
+                state.usersTrue[key]._id == action.response.user ? addUser[key] = state.usersTrue[key] : null
             ));
             Object.keys(addUser).map((i) => (
                 addUser[i].selected = true

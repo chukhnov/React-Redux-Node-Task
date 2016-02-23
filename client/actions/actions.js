@@ -4,7 +4,9 @@ import  {
     LOGOUT, SPINER, ADMIN, SAVE_USERS_LIST,
     USERS_SELECTED, FALSE_USERS,
     REMOVE_CURRENT_DAY, ADD_CURRENT_DAY,
-    CREATE_CALENDAR, TRUE_CALENDAR_DAY} from './../constants/RegisterActionTypes'
+    CREATE_CALENDAR, TRUE_CALENDAR_DAY, CREATE_CALENDAR_PLUS_WEEK,
+    CREATE_CALENDAR_MINUS_WEEK
+} from './../constants/RegisterActionTypes'
 import {browserHistory} from 'react-router'
 
 
@@ -17,6 +19,18 @@ export function userData(response) {
 export function createCalendar() {
     return dispatch => {
         dispatch({type: CREATE_CALENDAR});
+    };
+}
+
+export function createCalendarPlusWeek() {
+    return dispatch => {
+        dispatch({type: CREATE_CALENDAR_PLUS_WEEK});
+    };
+}
+
+export function createCalendarMinusWeek() {
+    return dispatch => {
+        dispatch({type: CREATE_CALENDAR_MINUS_WEEK});
     };
 }
 
@@ -49,19 +63,23 @@ export function selectedUsers(response) {
         dispatch({response, type: USERS_SELECTED});
     };
 }
+
 export function saveUsersList(response) {
     return dispatch => {
         dispatch({response, type: SAVE_USERS_LIST});
     };
 }
+
 export function spinerOn(response) {
     return dispatch => {
         dispatch({response, type: SPINER});
     };
 }
+
 export function loginError(error) {
     return {error, type: LOGIN_FAILED};
 }
+
 export function loginSuccess(response) {
     return dispatch => {
         dispatch({response, type: LOGIN_SUCCESSFULLY});
@@ -69,6 +87,7 @@ export function loginSuccess(response) {
         browserHistory.push('/dashboard');
     };
 }
+
 export function adminLogin(response) {
     return dispatch => {
         dispatch({response, type: ADMIN});
@@ -76,6 +95,7 @@ export function adminLogin(response) {
         browserHistory.push('/admin');
     };
 }
+
 export function registerError(error) {
     return {error, type: REGISTER_FAILED};
 }
@@ -87,6 +107,7 @@ export function registerSuccess(response) {
         browserHistory.push('/login');
     };
 }
+
 export function logout() {
     return dispatch => {
         dispatch({type: LOGOUT});
@@ -95,11 +116,13 @@ export function logout() {
     };
 }
 
+
+
+
 export function register(userData) {
     function parseJSON(res) {
         return res.json()
     }
-
     return dispatch =>
         fetch('/api/1/register', {
             method: 'post',
@@ -123,11 +146,13 @@ export function register(userData) {
                 console.log('request failed', error);
             });
 }
+
+
+
 export function login(userData) {
     function parseJSON(res) {
         return res.json()
     }
-
     return dispatch =>
         fetch('/api/1/login', {
             method: 'post',
@@ -151,8 +176,8 @@ export function login(userData) {
                         if (localStorage.getItem('user') == data._id) {
                             dispatch(loginSuccess(data.username));
                         }
-
-                    } else {
+                    } else
+                    {
                         dispatch(loginError(error));
                         throw error;
                     }
@@ -163,8 +188,8 @@ export function login(userData) {
             });
 }
 
-export function exit() {
 
+export function exit() {
     function parseJSON(response) {
         return response.json()
     }
@@ -177,8 +202,9 @@ export function exit() {
             .then(parseJSON)
             .then(function (data) {
                 if (data.ok) {
-                    dispatch(logout());
                     localStorage.setItem('admin', false);
+                    localStorage.setItem('user', null);
+                    dispatch(logout());
 
                 }
             }).catch(function (error) {
@@ -186,8 +212,8 @@ export function exit() {
         })
 }
 
-export function dataLoad() {
 
+export function dataLoad() {
     function parseJSON(response) {
         return response.json()
     }
@@ -210,6 +236,7 @@ export function dataLoad() {
         })
 }
 
+
 export function dataUpdate(userData) {
     return dispatch =>
         fetch('/api/1/update', {
@@ -222,6 +249,7 @@ export function dataUpdate(userData) {
             body: JSON.stringify(userData)
         });
 }
+
 
 export function updateUser(userData) {
     return dispatch =>
@@ -236,9 +264,8 @@ export function updateUser(userData) {
         });
 }
 
+
 export function userDeleteDay(userData) {
-
-
     return dispatch =>
         fetch('/api/1/deleteDay', {
             method: 'post',
@@ -251,8 +278,8 @@ export function userDeleteDay(userData) {
         });
 }
 
-export function usersLoad() {
 
+export function usersLoad() {
     function parseJSON(response) {
         return response.json()
     }

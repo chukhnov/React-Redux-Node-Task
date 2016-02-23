@@ -5,6 +5,8 @@ import moment from 'moment'
 import {browserHistory} from 'react-router'
 import {Button} from 'react-bootstrap';
 
+
+
 export  default class AdminPanel extends Component {
 
     componentWillMount() {
@@ -18,16 +20,17 @@ export  default class AdminPanel extends Component {
 
     render() {
 
+        var settings = {
+            dots: true,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1
+        };
+
         let selectedUsers = this.props.usersTrue;
         let calend = this.props.calendar;
-
         const styles = {
-            activeStyle: {
-                background: 'grey'
-            },
-            unActiveStyle: {
-                background: 'white'
-            },
             center: {
                 textAlign: 'center'
             },
@@ -43,10 +46,23 @@ export  default class AdminPanel extends Component {
                 position: 'absolute',
                 left: '60%'
             },
+            leftBut: {
+                position: 'absolute',
+                left: '20%'
+            },
+            rightBut: {
+                position: 'absolute',
+                left: '70%'
+            },
             all: {
                 width: '115px',
                 height: '35px',
                 fontSize: '25px'
+            },
+            wellStyles: {
+                maxWidth: 400,
+                margin: '0 auto 10px',
+                textAlign: 'center'
             }
         };
 
@@ -54,19 +70,25 @@ export  default class AdminPanel extends Component {
             <div style={styles.center}>
                 <div>
                     <br></br>
-                    <Button bsSize="small" bsStyle="primary" onClick={(e) => {this.onLogoutClick(e)}}>
+                    <Button bsSize="large" bsStyle="default" onClick={(e) => {this.onLogoutClick(e)}}>
                         Logout
                     </Button>
                 </div>
+                <Button style={styles.leftBut} bsSize="xsmall" bsStyle="warning" onClick={(e) => {this.minusWeek(e)}}>
+                    Previous week
+                </Button>
+                <Button style={styles.rightBut} bsSize="xsmall" bsStyle="primary" onClick={(e) => {this.plusWeek(e)}}>
+                    Next week
+                </Button>
                 <table className="table" style={styles.width}>
-                    <tbody>
+                    <tbody className="well" style={styles.wellStyles}>
                         <tr>
                             {Object.keys(calend).map((el, index) => (
                                 <td key={index}>
                                     <Button bsSize="xsmall" className={JSON.stringify(calend[el].status) == "true" ?
-                                     'active' : JSON.stringify(calend[el].status) == "false" ? null : null} >
-                                        <div style={styles.all} onClick={(e) => {this.itemClick(e)}}
-                                             value={{el}}>{el}</div>
+                                     'active' : JSON.stringify(calend[el].status) == "false" ? null : null}>
+                                        <div className={JSON.stringify(el)} style={styles.all}
+                                             onClick={(e) => {this.itemClick(e)}}>{el}</div>
                                     </Button>
                                 </td>
                             ))}
@@ -97,6 +119,18 @@ export  default class AdminPanel extends Component {
                 </div>
             </div>
         )
+
+    }
+
+    plusWeek(e) {
+        e.preventDefault();
+        this.props.createCalendarPlusWeek();
+
+    }
+
+    minusWeek(e) {
+        e.preventDefault();
+        this.props.createCalendarMinusWeek();
 
     }
 
@@ -136,11 +170,11 @@ export  default class AdminPanel extends Component {
 
     itemClick(event) {
         this.props.falseUsers();
-        const momentDate = event.target.value.el;
+        let res = event.target.className;
+        let momentDate = res.substring(1, res.length - 1);
         localStorage.setItem('momentDate', momentDate);
         this.props.usersSelected(momentDate);
         this.props.userList();
-        this.props.createCalendar();
         this.props.trueCalendarDay();
     }
 
@@ -153,6 +187,8 @@ AdminPanel.propTypes = {
     onLogoutClick: PropTypes.func.isRequired,
     usersSelected: PropTypes.func.isRequired,
     userDayDelete: PropTypes.func.isRequired,
+    createCalendarPlusWeek: PropTypes.func.isRequired,
+    createCalendarMinusWeek: PropTypes.func.isRequired,
     userList: PropTypes.func.isRequired,
     falseUsers: PropTypes.func.isRequired,
     removeCurrentDay: PropTypes.func.isRequired,
